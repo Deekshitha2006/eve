@@ -1,11 +1,9 @@
 services:
   - type: web
-    name: eventmanagement
+    name: eve
     runtime: java
-    buildCommand: ./mvnw clean package -DskipTests
+    buildCommand: ./mvnw clean install -DskipTests
     startCommand: java -jar target/*.jar
     envVars:
       - key: JAVA_VERSION
-        value: 17
-      - key: SERVER_PORT
-        value: 8080
+        value: "17"
