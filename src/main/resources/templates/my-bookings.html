@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Bookings</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav>
+    <h1>MY BOOKINGS</h1>
+    <a href="/" class="btn btn-secondary">Back_Home()</a>
+</nav>
+
+<div class="container">
+    <h2>MY TICKETS</h2>
+
+    <!-- UPCOMING EVENT ALERTS -->
+    <div th:if="${hasAlerts}"
+         th:class="${alertType == 'urgent' ? 'alert alert-warning' : 'alert alert-info'}"
+         style="margin-bottom: 20px; padding: 15px; border-radius: 8px;">
+        <h3 style="margin-top: 0;">
+            <span th:if="${alertType == 'urgent'}">⚠️ Upcoming Events</span>
+            <span th:unless="${alertType == 'urgent'}">📅 Events This Week</span>
+        </h3>
+        <div th:utext="${alertMessage}"></div>
+    </div>
+
+    <div th:if="${bookings.isEmpty()}" class="alert alert-info">
+        <p>You haven't booked any events yet. <a href="/">Browse Events</a></p>
+    </div>
+
+    <table th:unless="${bookings.isEmpty()}">
+        <tr>
+            <th>Event</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Booking Date</th>
+            <th>Status</th>
+        </tr>
+        <tr th:each="booking : ${bookings}">
+            <!-- Event Title (with null check) -->
+            <td th:text="${booking.event != null ? booking.event.title : 'Unknown Event'}">Event Name</td>
+
+            <!-- Location (with null check) -->
+            <td th:text="${booking.event != null ? booking.event.location : 'N/A'}">Location</td>
+
+            <!-- Date (with null check and formatting) -->
+            <td>
+                <span th:if="${booking.event != null && booking.event.date != null}"
+                      th:text="${#temporals.format(booking.event.date, 'MMM dd, yyyy')}">Date</span>
+                <span th:if="${booking.event == null || booking.event.date == null}"
+                      class="text-muted">Date TBD</span>
+            </td>
+
+            <!-- Booking Date (with formatting) -->
+            <td th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy')}">Booking Date</td>
+
+            <!-- Status -->
+            <td>
+                <span th:if="${booking.expired}" class="badge badge-danger">EXPIRED</span>
+                <span th:unless="${booking.expired}" class="badge badge-success">ACTIVE</span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>

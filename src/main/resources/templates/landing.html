@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <style>
+        /* Small Specific Styles for Splash Page */
+        .splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .loader-card {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(156, 85, 207, 0.2);
+            text-align: center;
+            border: 2px solid var(--primary); /* Pastel Border */
+            animation: fadeIn 1s ease;
+        }
+
+        .splash-title {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .progress-track {
+            width: 300px;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), #ffb6b9);
+            animation: loadProgress 3s ease-in-out forwards;
+        }
+
+        @keyframes loadProgress {
+            to { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="splash-screen">
+    <div class="loader-card">
+        <h1 class="splash-title">Event Manage</h1>
+        <p style="color: #555;">Save your events....</p>
+
+        <div class="progress-track">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    setTimeout(function() {
+        window.location.href = "/index";
+    }, 3000); // 3 seconds
+</script>
+
+</body>
+</html>

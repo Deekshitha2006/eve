@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Event Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css?v=3}">
+</head>
+<body>
+
+<!-- ALERT BOX -->
+<div th:if="${success}" style="background: var(--success); color: white; padding: 10px; text-align: center; border-radius: 5px; margin-bottom: 20px; animation: fadeIn 1s;">
+    <span th:text="${success}">Success Message</span>
+</div>
+<div th:if="${error}" style="background: var(--danger); color: white; padding: 10px; text-align: center; border-radius: 5px; margin-bottom: 20px; animation: fadeIn 1s;">
+    <span th:text="${error}">Error Message</span>
+</div>
+
+<nav>
+    <h1>EVENT MANAGER</h1>
+    <div>
+        <a href="/new" class="btn btn-primary">New Event</a>
+        <a href="/my-bookings/1" class="btn btn-primary">My Bookings</a>
+    </div>
+</nav>
+
+<!-- DASHBOARD CONTAINER -->
+<div class="container">
+    <h2>Available Events</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${events}">
+            <td th:text="${event.id}">1</td>
+            <td th:text="${event.title}">Event Title</td>
+
+            <td>
+                <span th:if="${event.date != null}" th:text="${#temporals.format(event.date, 'MMM dd, yyyy')}">Date</span>
+                <span th:if="${event.date == null}" class="text-muted">Date TBD</span>
+            </td>
+
+            <td th:text="${event.location}">Location</td>
+            <td th:text="${event.price}">$0.00</td>
+
+            <!-- STATUS COLUMN (Server-Side Calculation) -->
+            <td>
+                <!-- If event has no date -->
+                <span th:if="${event.date == null}" class="badge badge-secondary">Date TBD</span>
+
+                <!-- If event is in the past -->
+                <span th:if="${event.date != null && event.date.isBefore(#temporals.createToday())}"
+                      class="badge badge-danger">EXPIRED</span>
+
+                <!-- If event is today -->
+                <span th:if="${event.date != null && event.date.isEqual(#temporals.createToday())}"
+                      class="badge badge-urgent">TODAY!</span>
+
+                <!-- If event is within 3 days -->
+                <span th:if="${event.date != null && event.date.isAfter(#temporals.createToday()) && event.date.isBefore(#temporals.createToday().plusDays(4))}"
+                      class="badge badge-warning">SOON</span>
+
+                <!-- If event is more than 3 days away -->
+                <span th:if="${event.date != null && event.date.isAfter(#temporals.createToday().plusDays(3))}"
+                      class="badge badge-success">UPCOMING</span>
+            </td>
+
+            <td>
+                <!-- SAFE BOOK LINK -->
+                <a th:href="@{/book/{id}(id=${event.id})}" class="btn btn-primary">Book</a>
+                <a th:href="@{/delete/{id}(id=${event.id})}" class="btn btn-danger">Del</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function confirmBooking(eventName) {
+        const msg = `System: Confirm booking for "${eventName}"?\n\n> User Profile: ID [1]\n> Status: Ready.`;
+        if (confirm(msg)) {
+            return true;
+        }
+        return false;
+    }
+</script>
+
+</body>
+</html>
